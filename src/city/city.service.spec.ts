@@ -4,10 +4,26 @@ import { Repository } from 'typeorm';
 import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-config';
 import { CityEntity } from './city.entity';
 import { CityService } from './city.service';
+import { faker } from '@faker-js/faker';
 
 describe('CityService', () => {
   let service: CityService;
   let repository: Repository<CityEntity>;
+  const cityList: CityEntity[] = [];
+
+  const seedDatabase = async () => {
+    await repository.clear();
+
+    for (let i = 0; i < 5; i++) {
+      const city: CityEntity = await repository.save({
+        name: faker.location.city(),
+        country: faker.location.country(),
+        population: faker.number.int(),
+      });
+
+      cityList.push(city);
+    }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,9 +35,14 @@ describe('CityService', () => {
     repository = module.get<Repository<CityEntity>>(
       getRepositoryToken(CityEntity),
     );
+
+    await seedDatabase();
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('findAll should return all cities', async () => {
+    const cities: CityEntity[] = await service.findAll();
+
+    expect(cities).not.toBeNull();
+    expect(cities).toHaveLength(cityList.length);
   });
 });
