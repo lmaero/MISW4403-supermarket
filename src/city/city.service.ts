@@ -29,7 +29,7 @@ export class CityService {
     return await this.cityRepository.find({ relations: ['supermarkets'] });
   }
 
-  async findOne(d: string): Promise<CityEntity> {
+  async findOne(id: string): Promise<CityEntity> {
     const city: CityEntity = await this.cityRepository.findOne({
       where: { id },
       relations: ['supermarkets'],
@@ -44,27 +44,27 @@ export class CityService {
     return city;
   }
 
-  async create(cty: CityEntity): Promise<CityEntity> {
+  async create(city: CityEntity): Promise<CityEntity> {
     verifyCountry(city);
-    return await thiscityRepository.save(city);
+    return await this.cityRepository.save(city);
   }
 
-  async update(i: string, city: CityEntity): Promise<CityEntity> {
+  async update(id: string, city: CityEntity): Promise<CityEntity> {
     const persistedCity: CityEntity = await this.cityRepository.findOne({
       where: { id },
     });
 
-    if (!persistedCiy)
+    if (!persistedCity)
       throw new BusinessLogicException(
         'The city with the given id was not found',
         BusinessError.NOT_FOUND,
       );
 
-    verifyCountry(ciy);
-    return await thiscityRepository.save({ ...persistedCity, ...city });
+    verifyCountry(city);
+    return await this.cityRepository.save({ ...persistedCity, ...city });
   }
 
-  async delete(i: string) {
+  async delete(id: string) {
     const city: CityEntity = await this.cityRepository.findOne({
       where: { id },
     });
@@ -75,6 +75,6 @@ export class CityService {
         BusinessError.NOT_FOUND,
       );
 
-    await this.cityRpository.remove(city);
+    await this.cityRepository.remove(city);
   }
 }
