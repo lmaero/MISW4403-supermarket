@@ -111,4 +111,52 @@ describe('CitySupermarketService', () => {
       'The supermarket with the given id was not found',
     );
   });
+
+  it('deleteSupermarketFromCity should remove a supermarket from a city', async () => {
+    const supermarket: SupermarketEntity = supermarketList[0];
+
+    await service.deleteSupermarketFromCity(city.id, supermarket.id);
+
+    const storedCity: CityEntity = await cityRepository.findOne({
+      where: { id: city.id },
+      relations: ['supermarkets'],
+    });
+    const deletedSupermarket: SupermarketEntity = storedCity.supermarkets.find(
+      (s) => s.id === supermarket.id,
+    );
+
+    expect(deletedSupermarket).toBeUndefined();
+  });
+
+  it('deleteSupermarketFromCity should thrown an exception for an invalid supermarket', async () => {
+    await expect(() =>
+      service.deleteSupermarketFromCity(city.id, '0'),
+    ).rejects.toHaveProperty(
+      'message',
+      'The supermarket with the given id was not found',
+    );
+  });
+
+  it('deleteSupermarketFromCity should thrown an exception for an invalid city', async () => {
+    const supermarket: SupermarketEntity = supermarketList[0];
+    await expect(() =>
+      service.deleteSupermarketFromCity('0', supermarket.id),
+    ).rejects.toHaveProperty(
+      'message',
+      'The city with the given id was not found',
+    );
+  });
+
+  it('deleteSupermarketFromCity should thrown an exception for an non associated supermarket', async () => {
+    const newSupermarket: SupermarketEntity = await supermarketRepository.save(
+      generateSupermarket(),
+    );
+
+    await expect(() =>
+      service.deleteSupermarketFromCity(city.id, newSupermarket.id),
+    ).rejects.toHaveProperty(
+      'message',
+      'The supermarket with the given id is not associated to the city',
+    );
+  });
 });
