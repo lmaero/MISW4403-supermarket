@@ -3,6 +3,7 @@ import { CitySupermarketService } from './city-supermarket.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CityEntity } from '../city/city.entity';
 import { SupermarketEntity } from '../supermarket/supermarket.entity';
+import { CitySupermarketController } from './city-supermarket.controller';
 
 @Module({
   imports: [
@@ -10,5 +11,6 @@ import { SupermarketEntity } from '../supermarket/supermarket.entity';
     TypeOrmModule.forFeature([SupermarketEntity]),
   ],
   providers: [CitySupermarketService],
+  controllers: [CitySupermarketController],
 })
 export class CitySupermarketModule {}
