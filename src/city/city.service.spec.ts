@@ -60,4 +60,41 @@ describe('CityService', () => {
       'The city with the given id was not found',
     );
   });
+
+  it('create should return a new city if country is valid', async () => {
+    const city: CityEntity = {
+      id: '',
+      name: faker.location.city(),
+      country: 'Argentina',
+      population: faker.number.int(),
+      supermarkets: [],
+    };
+
+    const newCity: CityEntity = await service.create(city);
+    expect(newCity).not.toBeNull();
+
+    const storedCity: CityEntity = await repository.findOne({
+      where: { id: newCity.id },
+    });
+
+    expect(storedCity).not.toBeNull();
+    expect(storedCity.name).toEqual(newCity.name);
+    expect(storedCity.country).toEqual(newCity.country);
+    expect(storedCity.population).toEqual(newCity.population);
+  });
+
+  it('create should throw an exception for a city with an invalid country', async () => {
+    const city: CityEntity = {
+      id: '',
+      name: faker.location.city(),
+      country: 'Colombia',
+      population: faker.number.int(),
+      supermarkets: [],
+    };
+
+    await expect(() => service.create(city)).rejects.toHaveProperty(
+      'message',
+      'That is not a valid country',
+    );
+  });
 });

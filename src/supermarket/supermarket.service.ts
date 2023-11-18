@@ -8,7 +8,7 @@ import {
 } from '../shared/errors/business-errors';
 
 function verifySupermarketName(supermarket: SupermarketEntity) {
-  if (supermarket.name.length <= 10) {
+  if (supermarket.name.length < 10) {
     throw new BusinessLogicException(
       'Supermarket name should be at least 10 characters long',
       BusinessError.PRECONDITION_FAILED,

@@ -63,4 +63,44 @@ describe('SupermarketService', () => {
       'The supermarket with the given id was not found',
     );
   });
+
+  it('create should return a new supermarket', async () => {
+    const supermarket: SupermarketEntity = {
+      id: '',
+      name: '1234567890',
+      latitude: faker.location.latitude().toString(),
+      longitude: faker.location.longitude().toString(),
+      webpage: faker.internet.url(),
+      cities: [],
+    };
+
+    const newSupermarket: SupermarketEntity = await service.create(supermarket);
+    expect(newSupermarket).not.toBeNull();
+
+    const storedSupermarket: SupermarketEntity = await repository.findOne({
+      where: { id: newSupermarket.id },
+    });
+
+    expect(storedSupermarket).not.toBeNull();
+    expect(storedSupermarket.name).toEqual(newSupermarket.name);
+    expect(storedSupermarket.latitude).toEqual(newSupermarket.latitude);
+    expect(storedSupermarket.longitude).toEqual(newSupermarket.longitude);
+    expect(storedSupermarket.webpage).toEqual(newSupermarket.webpage);
+  });
+
+  it('create should throw an exception for a supermarket with a short name', async () => {
+    const supermarket: SupermarketEntity = {
+      id: '',
+      name: 'Short',
+      latitude: faker.location.latitude().toString(),
+      longitude: faker.location.longitude().toString(),
+      webpage: faker.internet.url(),
+      cities: [],
+    };
+
+    await expect(() => service.create(supermarket)).rejects.toHaveProperty(
+      'message',
+      'Supermarket name should be at least 10 characters long',
+    );
+  });
 });
