@@ -1,0 +1,383 @@
+{
+	"info": {
+		"_postman_id": "bd29825b-ac42-4606-a424-012db2bf6214",
+		"name": "supermarkets",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16367637"
+	},
+	"item": [
+		{
+			"name": "Add a supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"supermarketId\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomStreetAddress}}\",\n    \"latitude\": \"{{$randomLatitude}}\",\n    \"longitude\": \"{{$randomLongitude}}\",\n    \"webpage\": \"{{$randomUrl}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add an invalid supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"Supermarket name should be at least 10 characters long\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"1\",\n    \"latitude\": \"{{$randomLatitude}}\",\n    \"longitude\": \"{{$randomLongitude}}\",\n    \"webpage\": \"{{$randomUrl}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all supermarkets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Number of museums > ' + 0, function () {",
+							"   var data = pm.response.json()",
+							"   pm.expect(data.length).to.greaterThan(0)",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get one supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/supermarkets/{{supermarketId}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{supermarketId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a non-existing supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The supermarket with the given id was not found\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/supermarkets/{{notValidId}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{notValidId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomStreetAddress}}\",\n    \"latitude\": \"{{$randomLatitude}}\",\n    \"longitude\": \"{{$randomLongitude}}\",\n    \"webpage\": \"{{$randomUrl}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/supermarkets/{{supermarketId}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{supermarketId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a non-existing supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The supermarket with the given id was not found\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomStreetAddress}}\",\n    \"latitude\": \"{{$randomLatitude}}\",\n    \"longitude\": \"{{$randomLongitude}}\",\n    \"webpage\": \"{{$randomUrl}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/supermarkets/{{notValidId}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{notValidId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"   pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/supermarkets/{{supermarketId}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{supermarketId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a non-existing supermarket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The supermarket with the given id was not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/supermarkets/{{notValidId}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets",
+						"{{notValidId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "http://localhost:3000/api/v1",
+			"type": "string"
+		}
+	]
+}

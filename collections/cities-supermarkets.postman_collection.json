@@ -1,0 +1,502 @@
+{
+	"info": {
+		"_postman_id": "2bed1cdf-c1d8-44f8-b045-bc331b53816a",
+		"name": "cities-supermarkets",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16367637"
+	},
+	"item": [
+		{
+			"name": "Add a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"cityId\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomCity}}\",\n    \"country\": \"Argentina\",\n    \"population\": {{$randomInt}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/cities",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add supermarket 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"supermarketId1\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomStreetAddress}}\",\n    \"latitude\": \"{{$randomLatitude}}\",\n    \"longitude\": \"{{$randomLongitude}}\",\n    \"webpage\": \"{{$randomUrl}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add supermarket 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"supermarketId2\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomStreetAddress}}\",\n    \"latitude\": \"{{$randomLatitude}}\",\n    \"longitude\": \"{{$randomLongitude}}\",\n    \"webpage\": \"{{$randomUrl}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a supermarket to a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"cityId\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets/{{supermarketId1}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets",
+						"{{supermarketId1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a non existing-supermarket to a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The supermarket with the given id was not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets/0f14d0ab-9605-4a62-a9e4-5ed26688389b",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets",
+						"0f14d0ab-9605-4a62-a9e4-5ed26688389b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all supermarkets of a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a supermarket of a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets/{{supermarketId1}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets",
+						"{{supermarketId1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a supermarket of a non associated city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The supermarket with the given id is not associated to the city\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets/{{supermarketId2}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets",
+						"{{supermarketId2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update the supermarkets of a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{supermarketId2}}\"\n    }\n]\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update non-existing supermarket of a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The supermarket with the given id was not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{notValidId}}\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a supermarket associated to a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets/{{supermarketId2}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets",
+						"{{supermarketId2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a supermarket not associated to a city",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () {",
+							"    pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"    var data = pm.response.json();",
+							"    pm.expect(data.message).to.eql(\"The supermarket with the given id is not associated to the city\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/cities/{{cityId}}/supermarkets/{{supermarketId1}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"cities",
+						"{{cityId}}",
+						"supermarkets",
+						"{{supermarketId1}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "http://localhost:3000/api/v1",
+			"type": "string"
+		}
+	]
+}
