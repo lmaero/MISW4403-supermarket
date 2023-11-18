@@ -103,4 +103,45 @@ describe('SupermarketService', () => {
       'Supermarket name should be at least 10 characters long',
     );
   });
+
+  it('update should modify a supermarket if has a valid name', async () => {
+    const supermarket: SupermarketEntity = supermarketList[0];
+    supermarket.name = 'More than 10 characters name';
+
+    const updatedSupermarket: SupermarketEntity = await service.update(
+      supermarket.id,
+      supermarket,
+    );
+    expect(updatedSupermarket).not.toBeNull();
+
+    const storedSupermarket: SupermarketEntity = await repository.findOne({
+      where: { id: supermarket.id },
+    });
+    expect(storedSupermarket).not.toBeNull();
+    expect(storedSupermarket.name).toEqual(supermarket.name);
+  });
+
+  it('update should throw an exception for an invalid supermarket', async () => {
+    let supermarket: SupermarketEntity = supermarketList[0];
+    supermarket = {
+      ...supermarket,
+      name: 'New valid name',
+    };
+    await expect(() => service.update('0', supermarket)).rejects.toHaveProperty(
+      'message',
+      'The supermarket with the given id was not found',
+    );
+  });
+
+  it('update should throw if the supermarket name is less that 10 chars long', async () => {
+    const supermarket: SupermarketEntity = supermarketList[0];
+    supermarket.name = '1';
+
+    await expect(() =>
+      service.update(supermarket.id, supermarket),
+    ).rejects.toHaveProperty(
+      'message',
+      'Supermarket name should be at least 10 characters long',
+    );
+  });
 });

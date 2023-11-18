@@ -97,4 +97,43 @@ describe('CityService', () => {
       'That is not a valid country',
     );
   });
+
+  it('update should modify a city if country is valid', async () => {
+    const city: CityEntity = cityList[0];
+    city.name = 'Sheridan';
+    city.country = 'Ecuador';
+
+    const updatedCity: CityEntity = await service.update(city.id, city);
+    expect(updatedCity).not.toBeNull();
+
+    const storedCity: CityEntity = await repository.findOne({
+      where: { id: city.id },
+    });
+    expect(storedCity).not.toBeNull();
+    expect(storedCity.name).toEqual(city.name);
+    expect(storedCity.country).toEqual(city.country);
+  });
+
+  it('update should throw an exception for an invalid city', async () => {
+    let city: CityEntity = cityList[0];
+    city = {
+      ...city,
+      country: 'Paraguay',
+    };
+    await expect(() => service.update('0', city)).rejects.toHaveProperty(
+      'message',
+      'The city with the given id was not found',
+    );
+  });
+
+  it('update should throw if the country is not valid', async () => {
+    const city: CityEntity = cityList[0];
+    city.name = 'Sheridan';
+    city.country = 'USA';
+
+    await expect(() => service.update(city.id, city)).rejects.toHaveProperty(
+      'message',
+      'That is not a valid country',
+    );
+  });
 });
