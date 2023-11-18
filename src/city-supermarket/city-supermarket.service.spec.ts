@@ -16,8 +16,8 @@ describe('CitySupermarketService', () => {
   let supermarketList: SupermarketEntity[];
 
   async function seedDatabase() {
-    cityRepository.clear();
-    supermarketRepository.clear();
+    await cityRepository.clear();
+    await supermarketRepository.clear();
     supermarketList = [];
 
     for (let i = 0; i < 5; i++) {
@@ -27,7 +27,10 @@ describe('CitySupermarketService', () => {
       supermarketList.push(supermarket);
     }
 
-    city = await cityRepository.save(generateCity());
+    city = await cityRepository.save({
+      ...generateCity(),
+      supermarkets: supermarketList,
+    });
   }
 
   beforeEach(async () => {
@@ -43,6 +46,8 @@ describe('CitySupermarketService', () => {
     supermarketRepository = module.get<Repository<SupermarketEntity>>(
       getRepositoryToken(SupermarketEntity),
     );
+
+    await seedDatabase();
   });
 
   it('should be defined', () => {
@@ -89,6 +94,21 @@ describe('CitySupermarketService', () => {
     ).rejects.toHaveProperty(
       'message',
       'The city with the given id was not found',
+    );
+  });
+
+  it('findSupermarketsFromCity should return supermarkets by city', async () => {
+    const supermarkets: SupermarketEntity[] =
+      await service.findSupermarketsFromCity(city.id);
+    expect(supermarkets.length).toBe(supermarketList.length);
+  });
+
+  it('findSupermarketsFromCity should throw an exception for an invalid city', async () => {
+    await expect(() =>
+      service.findSupermarketFromCity('0', generateCity().id),
+    ).rejects.toHaveProperty(
+      'message',
+      'The supermarket with the given id was not found',
     );
   });
 });
