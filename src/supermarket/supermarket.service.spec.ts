@@ -9,10 +9,11 @@ import { faker } from '@faker-js/faker';
 describe('SupermarketService', () => {
   let service: SupermarketService;
   let repository: Repository<SupermarketEntity>;
-  const supermarketList: SupermarketEntity[] = [];
+  let supermarketList: SupermarketEntity[] = [];
 
   const seedDatabase = async () => {
     await repository.clear();
+    supermarketList = [];
 
     for (let i = 0; i < 5; i++) {
       const supermarket: SupermarketEntity = await repository.save({
@@ -45,5 +46,14 @@ describe('SupermarketService', () => {
 
     expect(supermarkets).not.toBeNull();
     expect(supermarkets).toHaveLength(supermarketList.length);
+  });
+
+  it('findOne should return a supermarket by id', async () => {
+    const storedSupermarket: SupermarketEntity = supermarketList[0];
+    const supermarket: SupermarketEntity = await service.findOne(
+      storedSupermarket.id,
+    );
+    expect(supermarket).not.toBeNull();
+    expect(supermarket.name).toEqual(storedSupermarket.name);
   });
 });

@@ -9,10 +9,11 @@ import { faker } from '@faker-js/faker';
 describe('CityService', () => {
   let service: CityService;
   let repository: Repository<CityEntity>;
-  const cityList: CityEntity[] = [];
+  let cityList: CityEntity[] = [];
 
   const seedDatabase = async () => {
     await repository.clear();
+    cityList = [];
 
     for (let i = 0; i < 5; i++) {
       const city: CityEntity = await repository.save({
@@ -44,5 +45,12 @@ describe('CityService', () => {
 
     expect(cities).not.toBeNull();
     expect(cities).toHaveLength(cityList.length);
+  });
+
+  it('findOne should return a city by id', async () => {
+    const storedCity: CityEntity = cityList[0];
+    const city: CityEntity = await service.findOne(storedCity.id);
+    expect(city).not.toBeNull();
+    expect(city.name).toEqual(storedCity.name);
   });
 });
