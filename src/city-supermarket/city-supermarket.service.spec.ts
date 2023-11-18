@@ -5,7 +5,8 @@ import { CityEntity } from '../city/city.entity';
 import { SupermarketEntity } from '../supermarket/supermarket.entity';
 import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-config';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { faker } from '@faker-js/faker';
+import { generateSupermarket } from '../supermarket/supermarket.service.spec';
+import { generateCity } from '../city/city.service.spec';
 
 describe('CitySupermarketService', () => {
   let service: CitySupermarketService;
@@ -20,21 +21,13 @@ describe('CitySupermarketService', () => {
     supermarketList = [];
 
     for (let i = 0; i < 5; i++) {
-      const supermarket: SupermarketEntity = await supermarketRepository.save({
-        name: faker.company.name(),
-        latitude: faker.location.latitude().toString(),
-        longitude: faker.location.longitude().toString(),
-        webpage: faker.internet.url(),
-      });
+      const supermarket: SupermarketEntity = await supermarketRepository.save(
+        generateSupermarket(),
+      );
       supermarketList.push(supermarket);
     }
 
-    city = await cityRepository.save({
-      name: faker.location.city(),
-      country: faker.location.country(),
-      population: faker.number.int(),
-      supermarkets: supermarketList,
-    });
+    city = await cityRepository.save(generateCity());
   }
 
   beforeEach(async () => {
@@ -57,19 +50,10 @@ describe('CitySupermarketService', () => {
   });
 
   it('addSupermarketToCity should add a supermarket to a city', async () => {
-    const newSupermarket: SupermarketEntity = await supermarketRepository.save({
-      name: faker.company.name(),
-      latitude: faker.location.latitude().toString(),
-      longitude: faker.location.longitude().toString(),
-      webpage: faker.internet.url(),
-    });
-
-    const newCity: CityEntity = await cityRepository.save({
-      name: faker.location.city(),
-      country: faker.location.country(),
-      population: faker.number.int(),
-      supermarkets: supermarketList,
-    });
+    const newSupermarket: SupermarketEntity = await supermarketRepository.save(
+      generateSupermarket(),
+    );
+    const newCity: CityEntity = await cityRepository.save(generateCity());
 
     const result: CityEntity = await service.addSupermarketToCity(
       newCity.id,
@@ -85,11 +69,7 @@ describe('CitySupermarketService', () => {
   });
 
   it('addSupermarketToCity should thrown exception for an invalid supermarket', async () => {
-    const newCity: CityEntity = await cityRepository.save({
-      name: faker.location.city(),
-      country: faker.location.country(),
-      population: faker.number.int(),
-    });
+    const newCity: CityEntity = await cityRepository.save(generateCity());
 
     await expect(() =>
       service.addSupermarketToCity(newCity.id, '0'),
@@ -100,12 +80,9 @@ describe('CitySupermarketService', () => {
   });
 
   it('addSupermarketToCity should throw an exception for an invalid city', async () => {
-    const newSupermarket: SupermarketEntity = await supermarketRepository.save({
-      name: faker.company.name(),
-      latitude: faker.location.latitude().toString(),
-      longitude: faker.location.longitude().toString(),
-      webpage: faker.internet.url(),
-    });
+    const newSupermarket: SupermarketEntity = await supermarketRepository.save(
+      generateSupermarket(),
+    );
 
     await expect(() =>
       service.addSupermarketToCity('0', newSupermarket.id),

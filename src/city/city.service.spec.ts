@@ -6,6 +6,16 @@ import { CityEntity } from './city.entity';
 import { CityService } from './city.service';
 import { faker } from '@faker-js/faker';
 
+export function generateCity(): CityEntity {
+  return {
+    id: faker.database.mongodbObjectId(),
+    name: faker.location.city(),
+    country: faker.location.country(),
+    population: faker.number.int(),
+    supermarkets: [],
+  };
+}
+
 describe('CityService', () => {
   let service: CityService;
   let repository: Repository<CityEntity>;
@@ -16,12 +26,7 @@ describe('CityService', () => {
     cityList = [];
 
     for (let i = 0; i < 5; i++) {
-      const city: CityEntity = await repository.save({
-        name: faker.location.city(),
-        country: faker.location.country(),
-        population: faker.number.int(),
-      });
-
+      const city: CityEntity = await repository.save(generateCity());
       cityList.push(city);
     }
   };
@@ -63,11 +68,8 @@ describe('CityService', () => {
 
   it('create should return a new city if country is valid', async () => {
     const city: CityEntity = {
-      id: '',
-      name: faker.location.city(),
+      ...generateCity(),
       country: 'Argentina',
-      population: faker.number.int(),
-      supermarkets: [],
     };
 
     const newCity: CityEntity = await service.create(city);
@@ -85,11 +87,8 @@ describe('CityService', () => {
 
   it('create should throw an exception for a city with an invalid country', async () => {
     const city: CityEntity = {
-      id: '',
-      name: faker.location.city(),
+      ...generateCity(),
       country: 'Colombia',
-      population: faker.number.int(),
-      supermarkets: [],
     };
 
     await expect(() => service.create(city)).rejects.toHaveProperty(

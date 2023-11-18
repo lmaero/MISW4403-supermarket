@@ -6,6 +6,17 @@ import { SupermarketEntity } from './supermarket.entity';
 import { SupermarketService } from './supermarket.service';
 import { faker } from '@faker-js/faker';
 
+export function generateSupermarket(): SupermarketEntity {
+  return {
+    id: faker.database.mongodbObjectId(),
+    name: faker.company.name(),
+    latitude: faker.location.latitude().toString(),
+    longitude: faker.location.longitude().toString(),
+    webpage: faker.internet.url(),
+    cities: [],
+  };
+}
+
 describe('SupermarketService', () => {
   let service: SupermarketService;
   let repository: Repository<SupermarketEntity>;
@@ -16,13 +27,9 @@ describe('SupermarketService', () => {
     supermarketList = [];
 
     for (let i = 0; i < 5; i++) {
-      const supermarket: SupermarketEntity = await repository.save({
-        name: faker.company.name(),
-        latitude: faker.location.latitude().toString(),
-        longitude: faker.location.longitude().toString(),
-        webpage: faker.internet.url(),
-      });
-
+      const supermarket: SupermarketEntity = await repository.save(
+        generateSupermarket(),
+      );
       supermarketList.push(supermarket);
     }
   };
@@ -66,12 +73,8 @@ describe('SupermarketService', () => {
 
   it('create should return a new supermarket', async () => {
     const supermarket: SupermarketEntity = {
-      id: '',
+      ...generateSupermarket(),
       name: '1234567890',
-      latitude: faker.location.latitude().toString(),
-      longitude: faker.location.longitude().toString(),
-      webpage: faker.internet.url(),
-      cities: [],
     };
 
     const newSupermarket: SupermarketEntity = await service.create(supermarket);
@@ -90,12 +93,8 @@ describe('SupermarketService', () => {
 
   it('create should throw an exception for a supermarket with a short name', async () => {
     const supermarket: SupermarketEntity = {
-      id: '',
+      ...generateSupermarket(),
       name: 'Short',
-      latitude: faker.location.latitude().toString(),
-      longitude: faker.location.longitude().toString(),
-      webpage: faker.internet.url(),
-      cities: [],
     };
 
     await expect(() => service.create(supermarket)).rejects.toHaveProperty(
