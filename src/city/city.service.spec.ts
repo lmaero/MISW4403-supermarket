@@ -136,4 +136,20 @@ describe('CityService', () => {
       'That is not a valid country',
     );
   });
+
+  it('delete should remove a city', async () => {
+    const city: CityEntity = cityList[0];
+    await service.delete(city.id);
+    const deletedCity: CityEntity = await repository.findOne({
+      where: { id: city.id },
+    });
+    expect(deletedCity).toBeNull();
+  });
+
+  it('delete should throw an exception for an invalid city', async () => {
+    await expect(() => service.delete('0')).rejects.toHaveProperty(
+      'message',
+      'The city with the given id was not found',
+    );
+  });
 });

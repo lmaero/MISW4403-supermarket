@@ -144,4 +144,20 @@ describe('SupermarketService', () => {
       'Supermarket name should be at least 10 characters long',
     );
   });
+
+  it('delete should remove a supermarket', async () => {
+    const supermarket: SupermarketEntity = supermarketList[0];
+    await service.delete(supermarket.id);
+    const deletedSupermarket: SupermarketEntity = await repository.findOne({
+      where: { id: supermarket.id },
+    });
+    expect(deletedSupermarket).toBeNull();
+  });
+
+  it('delete should throw an exception for an invalid supermarket', async () => {
+    await expect(() => service.delete('0')).rejects.toHaveProperty(
+      'message',
+      'The supermarket with the given id was not found',
+    );
+  });
 });
