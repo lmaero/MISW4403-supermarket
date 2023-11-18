@@ -159,4 +159,48 @@ describe('CitySupermarketService', () => {
       'The supermarket with the given id is not associated to the city',
     );
   });
+
+  it('updateSupermarketsFromCity should update supermarkets list for a city', async () => {
+    const newSupermarket: SupermarketEntity = await supermarketRepository.save(
+      generateSupermarket(),
+    );
+
+    const updatedCity: CityEntity = await service.updateSupermarketsFromCity(
+      city.id,
+      [newSupermarket],
+    );
+    expect(updatedCity.supermarkets.length).toBe(1);
+
+    expect(updatedCity.supermarkets[0].name).toBe(newSupermarket.name);
+    expect(updatedCity.supermarkets[0].latitude).toBe(newSupermarket.latitude);
+    expect(updatedCity.supermarkets[0].longitude).toBe(
+      newSupermarket.longitude,
+    );
+    expect(updatedCity.supermarkets[0].webpage).toBe(newSupermarket.webpage);
+  });
+
+  it('updateSupermarketsFromCity should throw an exception for an invalid city', async () => {
+    const newSupermarket: SupermarketEntity = await supermarketRepository.save(
+      generateSupermarket(),
+    );
+
+    await expect(() =>
+      service.updateSupermarketsFromCity('0', [newSupermarket]),
+    ).rejects.toHaveProperty(
+      'message',
+      'The city with the given id was not found',
+    );
+  });
+
+  it('updateSupermarketsFromCity should throw an exception for an invalid supermarket', async () => {
+    const newSupermarket: SupermarketEntity = supermarketList[0];
+    newSupermarket.id = '0';
+
+    await expect(() =>
+      service.updateSupermarketsFromCity(city.id, [newSupermarket]),
+    ).rejects.toHaveProperty(
+      'message',
+      'The supermarket with the given id was not found',
+    );
+  });
 });
