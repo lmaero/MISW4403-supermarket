@@ -53,4 +53,11 @@ describe('CityService', () => {
     expect(city).not.toBeNull();
     expect(city.name).toEqual(storedCity.name);
   });
+
+  it('findOne should throw an exception for an invalid city', async () => {
+    await expect(() => service.findOne('0')).rejects.toHaveProperty(
+      'message',
+      'The city with the given id was not found',
+    );
+  });
 });

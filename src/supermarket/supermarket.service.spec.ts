@@ -56,4 +56,11 @@ describe('SupermarketService', () => {
     expect(supermarket).not.toBeNull();
     expect(supermarket.name).toEqual(storedSupermarket.name);
   });
+
+  it('findOne should throw an exception for an invalid supermarket', async () => {
+    await expect(() => service.findOne('0')).rejects.toHaveProperty(
+      'message',
+      'The supermarket with the given id was not found',
+    );
+  });
 });
