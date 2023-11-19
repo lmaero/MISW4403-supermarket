@@ -100,7 +100,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test('Number of museums > ' + 0, function () {",
+							"pm.test('Number of cities > ' + 0, function () {",
 							"   var data = pm.response.json()",
 							"   pm.expect(data.length).to.greaterThan(0)",
 							"});",
